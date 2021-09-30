@@ -347,7 +347,7 @@ resource "aws_autoscaling_group" "windows_workers" {
 }
 
 locals {
-  launch_configuration_userdata_rendered = templatefile("${path.module}/.terraform/modules/eks/templates/userdata_windows.tpl",
+  launch_configuration_userdata_rendered = templatefile("${path.module}/templates/userdata_windows.tpl",
     {
       platform             = "windows"
       cluster_name         = var.eks_cluster_name
