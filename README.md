@@ -63,7 +63,6 @@ provider "aws" {
 module "eks_windows" {
   source = "../../" # Actually set to "1nval1dctf/eks-windows/aws"
 }
-
 ```
 
 ## Building / Contributing
