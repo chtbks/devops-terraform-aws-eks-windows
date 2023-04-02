@@ -1,6 +1,6 @@
 repos:
-- repo: git://github.com/antonbabenko/pre-commit-terraform
-  rev: v1.51.0
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.77.0
   hooks:
     - id: terraform_fmt
     - id: terraform_docs
@@ -9,18 +9,39 @@ repos:
       - '--envs=AWS_DEFAULT_REGION="us-east-1"'
     - id: terraform_tflint
       args:
+        - '--args=--enable-rule=terraform_documented_variables'
         - '--args=--config=__GIT_WORKING_DIR__/.tflint.hcl'
       require_serial: true
-    #- id: terraform_tfsec
-    #- id: checkov
-    #- id: terrascan
-- repo: git://github.com/dnephin/pre-commit-golang
-  rev: v0.4.0
+    - id: terraform_tfsec
+      args:
+        - '--args=-e aws-ec2-require-vpc-flow-logs-for-all-vpcs,aws-ec2-no-public-ip-subnet,aws-eks-no-public-cluster-access-to-cidr,aws-ec2-no-public-egress-sgr,aws-eks-no-public-cluster-access'
+    - id: terraform_checkov
+      args:
+        - --args=--quiet
+        - --args=--skip-check CKV_K8S_21
+        - --args=--skip-check CKV_K8S_14
+        - --args=--skip-check CKV_K8S_43
+        - --args=--skip-check CKV_K8S_28
+        - --args=--skip-check CKV_K8S_29
+        - --args=--skip-check CKV_K8S_30
+    - id: terrascan
+      args:
+        - '--args=-i terraform -d test/fixture'
+        - '--args=--skip-rules="AC_AWS_0369,AC_K8S_0064"'
+    - id: tfupdate
+      name: Autoupdate Terraform versions
+    - id: infracost_breakdown
+      args:
+        - --args=--path=./test/fixture
+        - --hook-config='.totalMonthlyCost|tonumber < 260'
+        - --hook-config='.currency == "USD"'
+- repo: https://github.com/dnephin/pre-commit-golang
+  rev: v0.5.1
   hooks:
     - id: go-fmt
     - id: go-mod-tidy
-- repo: git://github.com/pre-commit/pre-commit-hooks
-  rev: v4.0.1
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.4.0
   hooks:
     - id: check-json
     - id: check-yaml

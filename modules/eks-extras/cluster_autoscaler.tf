@@ -1,27 +1,20 @@
 # policy for cluster-ausoscaler to be able to scale new worker nodes.
-resource "aws_iam_role_policy_attachment" "worker_role_cluster_autoscaler" {
-  policy_arn = aws_iam_policy.cluster_autoscaler.arn
-  role       = var.eks_worker_iam_role_name
-}
-
-resource "aws_iam_policy" "cluster_autoscaler" {
-  name_prefix = "cluster-autoscaler"
-  description = "EKS cluster-autoscaler policy for cluster ${var.eks_cluster_id}"
-  policy      = data.aws_iam_policy_document.cluster_autoscaler.json
-}
 
 #tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "cluster_autoscaler" {
+  #checkov:skip=CKV_AWS_111:Ensure IAM policies does not allow write access without constraints
+  count = var.enable_cluster_autoscaler ? 1 : 0
   statement {
     sid    = "clusterAutoscalerAll"
     effect = "Allow"
 
     actions = [
-      "autoscaling:DescribeAutoScalingGroups",
       "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeLaunchConfigurations",
-      "autoscaling:DescribeTags",
+      "autoscaling:DescribeAutoScalingGroups",
       "ec2:DescribeLaunchTemplateVersions",
+      "autoscaling:DescribeTags",
+      "autoscaling:DescribeLaunchConfigurations",
+      "ec2:DescribeInstanceTypes",
     ]
 
     resources = ["*"]
@@ -34,26 +27,40 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
     actions = [
       "autoscaling:SetDesiredCapacity",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
-      "autoscaling:UpdateAutoScalingGroup",
     ]
 
     resources = ["*"]
 
     condition {
       test     = "StringEquals"
-      variable = "autoscaling:ResourceTag/kubernetes.io/cluster/${var.eks_cluster_id}"
+      variable = "autoscaling:ResourceTag/kubernetes.io/cluster/${var.eks_cluster_name}"
       values   = ["owned"]
-    }
-
-    condition {
-      test     = "StringEquals"
-      variable = "autoscaling:ResourceTag/k8s.io/cluster-autoscaler/enabled"
-      values   = ["true"]
     }
   }
 }
 
+resource "aws_iam_policy" "cluster_autoscaler" {
+  count       = var.enable_cluster_autoscaler ? 1 : 0
+  name_prefix = "cluster-autoscaler"
+  description = "EKS cluster-autoscaler policy for cluster ${var.eks_cluster_name}"
+  policy      = data.aws_iam_policy_document.cluster_autoscaler[0].json
+}
+
+resource "aws_iam_role_policy_attachment" "linux_node_group_cluster_autoscaler" {
+  count      = var.enable_cluster_autoscaler ? 1 : 0
+  policy_arn = aws_iam_policy.cluster_autoscaler[0].arn
+  role       = var.linux_node_group_iam_role
+}
+
+resource "aws_iam_role_policy_attachment" "windows_node_group_cluster_autoscaler" {
+  count      = var.enable_cluster_autoscaler ? 1 : 0
+  policy_arn = aws_iam_policy.cluster_autoscaler[0].arn
+  role       = var.windows_node_group_iam_role
+}
+
+
 resource "helm_release" "cluster_autoscaler" {
+  count      = var.enable_cluster_autoscaler ? 1 : 0
   name       = "cluster-autoscaler"
   chart      = "cluster-autoscaler"
   repository = "https://kubernetes.github.io/autoscaler"
@@ -69,7 +76,7 @@ resource "helm_release" "cluster_autoscaler" {
   }
   set {
     name  = "autoDiscovery.clusterName"
-    value = var.eks_cluster_id
+    value = var.eks_cluster_name
   }
   set {
     name  = "cloudProvider"
