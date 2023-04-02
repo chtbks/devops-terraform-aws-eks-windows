@@ -44,6 +44,7 @@ init_modules:
 		pushd $$MODULE && terraform init -upgrade -input=false -backend=false && popd; \
 	done
 
+.PHONY : pre-commit
 pre-commit: pre-commit-check init_all terrascan-init tflint-init
 	pre-commit run -a
 

@@ -10,16 +10,10 @@ variable "private_subnet_ids" {
   default     = []
 }
 
-variable "public_subnet_ids" {
-  type        = list(string)
-  description = "List of private subnet ids"
-  default     = []
-}
-
 variable "eks_cluster_name" {
   type        = string
   description = "Name for the EKS cluster"
-  default     = "ctfd-eks"
+  default     = "eks"
 }
 
 variable "eks_users" {
@@ -34,19 +28,19 @@ variable "eks_users" {
 }
 
 # eks autoscaling
-variable "eks_autoscaling_group_min_size" {
+variable "eks_autoscaling_group_linux_min_size" {
   description = "Minimum number of Linux nodes for the EKS."
   default     = 1
   type        = number
 }
 
-variable "eks_autoscaling_group_desired_capacity" {
+variable "eks_autoscaling_group_linux_desired_capacity" {
   description = "Desired capacity for Linux nodes for the EKS."
   default     = 1
   type        = number
 }
 
-variable "eks_autoscaling_group_max_size" {
+variable "eks_autoscaling_group_linux_max_size" {
   description = "Minimum number of Linux nodes for the EKS."
   default     = 2
   type        = number
@@ -58,7 +52,7 @@ variable "eks_instance_type" {
   type        = string
 }
 
-# eks autoscaling for windows
+# # eks autoscaling for windows
 variable "eks_autoscaling_group_windows_min_size" {
   description = "Minimum number of Windows nodes for the EKS"
   default     = 1

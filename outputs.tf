@@ -13,8 +13,9 @@ output "public_subnet_ids" {
   description = "List of public subnets that contain frontend infrastructure (ALB)"
 }
 
-output "eks_cluster_id" {
-  value       = module.eks.eks_cluster_id
+
+output "eks_cluster_name" {
+  value       = module.eks.cluster_name
   description = "EKS cluster ID"
   depends_on = [
     module.eks,
@@ -22,7 +23,23 @@ output "eks_cluster_id" {
   ]
 }
 
+output "eks_cluster_endpoint" {
+  value       = module.eks.cluster_endpoint
+  description = "EKS cluster endpoint"
+  depends_on = [
+    module.eks,
+    module.eks_extras
+  ]
+}
+output "eks_cluster_certificate_authority_data" {
+  value       = module.eks.cluster_certificate_authority_data
+  description = "EKS cluster CA"
+  depends_on = [
+    module.eks,
+    module.eks_extras
+  ]
+}
 output "kubeconfig" {
-  description = "kubectl config file contents for this EKS cluster."
-  value       = module.eks.kubeconfig
+  value       = local.kubeconfig
+  description = "kubeconfig for the AWS EKS cluster"
 }

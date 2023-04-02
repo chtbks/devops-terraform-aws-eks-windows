@@ -4,7 +4,7 @@ on:
   pull_request:
   schedule:
     - cron: 0 0 * * 5
-
+permissions: read-all
 jobs:
   terraform_validation:
     runs-on: ubuntu-latest

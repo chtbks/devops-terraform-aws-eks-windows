@@ -1,17 +1,17 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = "1.4.4"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.59"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.3"
+      version = "4.60.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "2.3.0"
+      version = "2.9.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "2.19.0"
     }
   }
 }
@@ -21,29 +21,32 @@ provider "aws" {
 }
 
 module "test" {
-  source            = "../../"
-  eks_instance_type = "t3.small"
-}
-
-data "aws_eks_cluster" "cluster" {
-  name = module.test.eks_cluster_id
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.test.eks_cluster_id
+  source               = "../../"
+  external_dns_support = true
 }
 
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+
+  host                   = module.test.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.test.eks_cluster_certificate_authority_data)
+  exec {
+    api_version = "client.authentication.k8s.io/v1beta1"
+    command     = "aws"
+    # This requires the awscli to be installed locally where Terraform is executed
+    args = ["eks", "get-token", "--cluster-name", module.test.eks_cluster_name]
+  }
 }
 
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
+    host                   = module.test.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.test.eks_cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      command     = "aws"
+      # This requires the awscli to be installed locally where Terraform is executed
+      args = ["eks", "get-token", "--cluster-name", module.test.eks_cluster_name]
+    }
   }
 }
 
@@ -70,11 +73,24 @@ resource "kubernetes_deployment" "nginx" {
       }
       spec {
         container {
-          image = "nginx:1.7.8"
-          name  = "nginx"
+          image             = "nginx:latest"
+          name              = "nginx"
+          image_pull_policy = "Always"
 
           port {
             container_port = 80
+          }
+          liveness_probe {
+            http_get {
+              path = "/"
+              port = 80
+            }
+          }
+          readiness_probe {
+            http_get {
+              path = "/"
+              port = 80
+            }
           }
 
           resources {
@@ -134,11 +150,46 @@ resource "kubernetes_deployment" "windows" {
       }
       spec {
         container {
-          image = "mcr.microsoft.com/windows/servercore/iis"
-          name  = "windows"
+          image             = "mcr.microsoft.com/windows/servercore/iis:latest"
+          name              = "windows"
+          image_pull_policy = "Always"
           port {
             name           = "http"
             container_port = 80
+          }
+          liveness_probe {
+            http_get {
+              path = "/"
+              port = 80
+            }
+          }
+
+          readiness_probe {
+            http_get {
+              path = "/"
+              port = 80
+            }
+          }
+
+          resources {
+            limits = {
+              cpu    = "0.5"
+              memory = "512Mi"
+            }
+            requests = {
+              cpu    = "250m"
+              memory = "50Mi"
+            }
+          }
+          security_context {
+            allow_privilege_escalation = false
+            capabilities {
+              drop = [
+                "NET_RAW",
+                "ALL"
+              ]
+            }
+            read_only_root_filesystem = true
           }
         }
         node_selector = {

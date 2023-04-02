@@ -22,11 +22,33 @@ func MetricsServerTest(t *testing.T, kubectlOptionsKubeSystem *k8s.KubectlOption
 	}
 }
 
+func ClusterAutoscalerTest(t *testing.T, kubectlOptionsKubeSystem *k8s.KubectlOptions) {
+	_, err := k8s.GetServiceE(t, kubectlOptionsKubeSystem, "cluster-autoscaler-aws-cluster-autoscaler")
+	if err != nil {
+		t.Errorf("Error failed to get cluster-autoscaler service: %v\n", err)
+	}
+}
+
+func LoadBalancerTest(t *testing.T, kubectlOptionsKubeSystem *k8s.KubectlOptions) {
+	_, err := k8s.GetServiceE(t, kubectlOptionsKubeSystem, "aws-load-balancer-webhook-service")
+	if err != nil {
+		t.Errorf("Error failed to get aws-load-balancer-webhook-service: %v\n", err)
+	}
+}
+
+func CloudwatchTest(t *testing.T, kubectlOptionsKubeSystem *k8s.KubectlOptions) {
+	_, err := k8s.GetServiceE(t, kubectlOptionsKubeSystem, "fluent-bit")
+	if err != nil {
+		t.Errorf("Error failed to get fluent-bit service: %v\n", err)
+	}
+}
+
 func NodeTest(t *testing.T, kubectlOptions *k8s.KubectlOptions) {
-	_, err := k8s.GetReadyNodesE(t, kubectlOptions)
+	nodes, err := k8s.GetReadyNodesE(t, kubectlOptions)
 	if err != nil {
 		t.Errorf("Error failed to get nodes: %v\n", err)
 	}
+	require.Equal(t, 2, len(nodes))
 }
 
 func Test(t *testing.T) {
@@ -90,13 +112,11 @@ func Test(t *testing.T) {
 		terraformOptions := test_structure.LoadTerraformOptions(t, fixtureFolder)
 
 		kubeConfig := terraform.Output(t, terraformOptions, "kubeconfig")
-
 		file, err := ioutil.TempFile(os.TempDir(), "kubeconfig-")
 		require.NoError(t, err)
-
-		if _, err = file.Write([]byte(kubeConfig)); err != nil {
-			t.Errorf("Failed to write to temporary kubeconfig: %v\n", err)
-		}
+		//log.Printf(deQuoted)
+		_, err = file.Write([]byte(kubeConfig))
+		require.NoError(t, err)
 
 		kubectlOptions := &k8s.KubectlOptions{ConfigPath: file.Name(), Namespace: "default"}
 
@@ -106,6 +126,16 @@ func Test(t *testing.T) {
 		// Check metric-server is running
 		kubectlOptionsKubeSystem := &k8s.KubectlOptions{ConfigPath: file.Name(), Namespace: "kube-system"}
 		MetricsServerTest(t, kubectlOptionsKubeSystem)
+
+		// test cluster autosclaer is running
+		ClusterAutoscalerTest(t, kubectlOptionsKubeSystem)
+
+		// test load balancer is running
+		LoadBalancerTest(t, kubectlOptionsKubeSystem)
+
+		// test fluent-bit is running
+		kubectlOptionsCloudwatch := &k8s.KubectlOptions{ConfigPath: file.Name(), Namespace: "amazon-cloudwatch"}
+		CloudwatchTest(t, kubectlOptionsCloudwatch)
 
 		//Check the linux nginx image is running
 		nginx_pods := k8s.ListPods(t, kubectlOptions, metav1.ListOptions{LabelSelector: "app=nginx"})
@@ -118,30 +148,6 @@ func Test(t *testing.T) {
 			t.Errorf("Error failed to get nginx service: %v\n", err)
 		}
 
-	})
-
-	// validate windows containers can run
-	test_structure.RunTestStage(t, "validate_windows", func() {
-		terraformOptions := test_structure.LoadTerraformOptions(t, fixtureFolder)
-
-		kubeConfig := terraform.Output(t, terraformOptions, "kubeconfig")
-
-		file, err := ioutil.TempFile(os.TempDir(), "kubeconfig-")
-		require.NoError(t, err)
-
-		if _, err = file.Write([]byte(kubeConfig)); err != nil {
-			t.Errorf("Failed to write to temporary kubeconfig: %v\n", err)
-		}
-
-		kubectlOptions := &k8s.KubectlOptions{ConfigPath: file.Name(), Namespace: "default"}
-
-		output, err := k8s.RunKubectlAndGetOutputE(t, kubectlOptions, "get", "clusterrolebinding", "eks:kube-proxy-windows")
-		if err == nil {
-			assert.Contains(t, output, "kube-proxy-windows")
-		} else {
-			t.Errorf("Error EKS does not support windows containers: %v\n", err)
-		}
-
 		windows_pods := k8s.ListPods(t, kubectlOptions, metav1.ListOptions{LabelSelector: "app=windows"})
 		for key := range windows_pods {
 			err := k8s.WaitUntilPodAvailableE(t, kubectlOptions, windows_pods[key].Name, 60, 1*time.Second)
@@ -151,6 +157,7 @@ func Test(t *testing.T) {
 		if err != nil {
 			t.Errorf("Error failed to get windows service: %v\n", err)
 		}
+
 	})
 
 }

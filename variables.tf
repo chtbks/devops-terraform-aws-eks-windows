@@ -22,19 +22,19 @@ variable "eks_users" {
 }
 
 # EKS autoscaling
-variable "eks_autoscaling_group_min_size" {
+variable "eks_autoscaling_group_linux_min_size" {
   description = "Minimum number of Linux nodes for the EKS."
   default     = 1
   type        = number
 }
 
-variable "eks_autoscaling_group_desired_capacity" {
+variable "eks_autoscaling_group_linux_desired_capacity" {
   description = "Desired capacity for Linux nodes for the EKS."
   default     = 1
   type        = number
 }
 
-variable "eks_autoscaling_group_max_size" {
+variable "eks_autoscaling_group_linux_max_size" {
   description = "Minimum number of Linux nodes for the EKS."
   default     = 2
   type        = number
@@ -63,4 +63,34 @@ variable "eks_autoscaling_group_windows_max_size" {
   description = "Maximum number of Windows nodes for the EKS."
   default     = 2
   type        = number
+}
+
+variable "external_dns_support" {
+  type        = bool
+  description = "Setup IAM, service accoutn and cluster role for external_dns in EKS"
+  default     = false
+}
+
+variable "enable_metrics_server" {
+  type        = bool
+  description = "Install metrics server into the cluster"
+  default     = true
+}
+
+variable "enable_cluster_autoscaler" {
+  type        = bool
+  description = "Enable cluster autoscaler"
+  default     = true
+}
+
+variable "enable_cloudwatch_exported" {
+  type        = bool
+  description = "Enable cloudwatch exporter"
+  default     = true
+}
+
+variable "enable_loadbalancer_controler" {
+  type        = bool
+  description = "Enable ALB load Balancer controller"
+  default     = true
 }

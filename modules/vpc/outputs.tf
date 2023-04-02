@@ -12,3 +12,7 @@ output "public_subnet_ids" {
   value       = module.vpc.public_subnets
   description = "List of public subnets"
 }
+output "intra_subnet_ids" {
+  value       = module.vpc.intra_subnets
+  description = "List of intra subnets"
+}

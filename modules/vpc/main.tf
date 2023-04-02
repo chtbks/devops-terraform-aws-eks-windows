@@ -1,9 +1,9 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = "1.4.4"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.59"
+      version = "4.60.0"
     }
   }
 }
@@ -14,7 +14,7 @@ data "aws_availability_zones" "available" {}
 # Create a VPC to launch our instances into
 module "vpc" {
   source               = "terraform-aws-modules/vpc/aws"
-  version              = "3.7.0"
+  version              = "3.19.0"
   name                 = "${var.eks_cluster_name}-vpc"
   cidr                 = var.vpc_cidr_block
   azs                  = data.aws_availability_zones.available.names
@@ -24,6 +24,10 @@ module "vpc" {
   enable_dns_support   = true
   enable_nat_gateway   = true
   single_nat_gateway   = true
+
+  enable_flow_log                      = true
+  create_flow_log_cloudwatch_iam_role  = true
+  create_flow_log_cloudwatch_log_group = true
 
   vpc_tags = {
     "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"
