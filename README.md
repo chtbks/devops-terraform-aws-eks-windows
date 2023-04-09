@@ -35,6 +35,7 @@ No providers.
 | <a name="input_enable_loadbalancer_controler"></a> [enable\_loadbalancer\_controler](#input\_enable\_loadbalancer\_controler) | Enable ALB load Balancer controller | `bool` | `true` | no |
 | <a name="input_enable_metrics_server"></a> [enable\_metrics\_server](#input\_enable\_metrics\_server) | Install metrics server into the cluster | `bool` | `true` | no |
 | <a name="input_external_dns_support"></a> [external\_dns\_support](#input\_external\_dns\_support) | Setup IAM, service accoutn and cluster role for external\_dns in EKS | `bool` | `false` | no |
+| <a name="input_windows_ami_type"></a> [windows\_ami\_type](#input\_windows\_ami\_type) | AMI type for the Windows Nodes. | `string` | `"WINDOWS_CORE_2022_x86_64"` | no |
 ## Outputs
 
 | Name | Description |
