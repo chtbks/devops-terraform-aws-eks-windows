@@ -70,3 +70,9 @@ variable "eks_autoscaling_group_windows_max_size" {
   default     = 2
   type        = number
 }
+
+
+variable "windows_ami_type" {
+  description = "AMI type for the Windows Nodes."
+  type        = string
+}

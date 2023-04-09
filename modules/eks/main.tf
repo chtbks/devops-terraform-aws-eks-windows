@@ -42,7 +42,7 @@ module "eks" {
       # By default, the module creates a launch template to ensure tags are propagated to instances, etc.,
       # so we need to disable it to use the default template provided by the AWS EKS managed node group service
       use_custom_launch_template = false
-      ami_type                   = "WINDOWS_CORE_2022_x86_64"
+      ami_type                   = var.windows_ami_type
       tags = {
         "k8s.io/cluster-autoscaler/enabled"                 = "true",
         "k8s.io/cluster-autoscaler/${var.eks_cluster_name}" = "owned"

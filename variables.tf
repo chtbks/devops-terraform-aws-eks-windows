@@ -94,3 +94,9 @@ variable "enable_loadbalancer_controler" {
   description = "Enable ALB load Balancer controller"
   default     = true
 }
+
+variable "windows_ami_type" {
+  description = "AMI type for the Windows Nodes."
+  default     = "WINDOWS_CORE_2022_x86_64"
+  type        = string
+}

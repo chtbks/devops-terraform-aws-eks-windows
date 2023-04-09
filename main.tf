@@ -34,6 +34,7 @@ module "eks" {
   eks_autoscaling_group_windows_min_size         = var.eks_autoscaling_group_windows_min_size
   eks_autoscaling_group_windows_desired_capacity = var.eks_autoscaling_group_windows_desired_capacity
   eks_autoscaling_group_windows_max_size         = var.eks_autoscaling_group_windows_max_size
+  windows_ami_type                               = var.windows_ami_type
 }
 module "eks_extras" {
   source                        = "./modules/eks-extras"
