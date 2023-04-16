@@ -42,7 +42,7 @@ resource "aws_iam_role_policy_attachment" "windows_node_group_dns" {
 }
 
 #tfsec:ignore:GEN003
-resource "kubernetes_service_account" "external_dns" {
+resource "kubernetes_service_account_v1" "external_dns" {
   count    = var.external_dns_support ? 1 : 0
   provider = kubernetes
   metadata {

@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.4.4"
+  required_version = "1.4.5"
   required_providers {
     kubernetes = {
       source  = "hashicorp/kubernetes"
@@ -8,16 +8,12 @@ terraform {
   }
 }
 
-locals {
-  cluster_version = "1.25"
-}
-
 module "eks" {
   source                         = "terraform-aws-modules/eks/aws"
   version                        = "19.10.3"
   cluster_name                   = var.eks_cluster_name
-  cluster_version                = local.cluster_version
-  subnet_ids                     = var.private_subnet_ids
+  cluster_version                = var.eks_cluster_version
+  subnet_ids                     = concat(var.private_subnet_ids, var.public_subnet_ids)
   vpc_id                         = var.vpc_id
   cluster_endpoint_public_access = true
   aws_auth_users                 = var.eks_users

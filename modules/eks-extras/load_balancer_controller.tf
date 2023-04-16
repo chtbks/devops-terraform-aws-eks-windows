@@ -319,6 +319,13 @@ resource "aws_iam_policy" "aws_lb" {
   path   = "/"
   policy = data.aws_iam_policy_document.aws_lb[0].json
 }
+data "aws_iam_openid_connect_provider" "eks" {
+  arn = var.eks_cluster_oicd_provider_arn
+}
+locals {
+  lbcontroller_service_account_name = "aws-load-balancer-controller"
+  oidc_provider                     = try(replace(data.aws_iam_openid_connect_provider.eks.url, "https://", ""), null)
+}
 
 resource "aws_iam_role" "aws_lb" {
   count = var.enable_loadbalancer_controler ? 1 : 0
@@ -327,13 +334,18 @@ resource "aws_iam_role" "aws_lb" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "sts:AssumeRole"
+        Action = "sts:AssumeRoleWithWebIdentity"
         Effect = "Allow"
-        Sid    = ""
         Principal = {
-          Service = "ec2.amazonaws.com"
+          Federated = var.eks_cluster_oicd_provider_arn
         }
-      },
+        Condition = {
+          StringEquals = {
+            "${local.oidc_provider}:aud" = "sts.amazonaws.com",
+            "${local.oidc_provider}:sub" = "system:serviceaccount:kube-system:${local.lbcontroller_service_account_name}"
+          }
+        }
+      }
     ]
   })
 }
@@ -348,17 +360,50 @@ resource "kubernetes_service_account_v1" "aws_lb" {
   count    = var.enable_loadbalancer_controler ? 1 : 0
   provider = kubernetes
   metadata {
-    name      = "aws-load-balancer-controller"
+    name      = local.lbcontroller_service_account_name
     namespace = "kube-system"
     labels = {
       "app.kubernetes.io/component" = "controller"
-      "app.kubernetes.io/name"      = "aws-load-balancer-controller"
+      "app.kubernetes.io/name"      = local.lbcontroller_service_account_name
     }
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb[0].arn
     }
   }
   automount_service_account_token = "true"
+}
+resource "kubernetes_cluster_role" "aws_lb" {
+  count = var.enable_loadbalancer_controler ? 1 : 0
+  metadata {
+    name = local.lbcontroller_service_account_name
+  }
+  rule {
+    api_groups = ["extensions", "networking.k8s.io"]
+    resources  = ["ingresses"]
+    verbs      = ["get", "list", "watch"]
+  }
+  rule {
+    api_groups = ["extensions", "networking.k8s.io"]
+    resources  = ["ingresses/status"]
+    verbs      = ["patch", "update"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "aws_lb" {
+  count = var.enable_loadbalancer_controler ? 1 : 0
+  metadata {
+    name = "${local.lbcontroller_service_account_name}-viewer"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = local.lbcontroller_service_account_name
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = local.lbcontroller_service_account_name
+    namespace = "kube-system"
+  }
 }
 
 resource "helm_release" "aws_lb" {
@@ -382,6 +427,14 @@ resource "helm_release" "aws_lb" {
   set {
     name  = "nodeSelector.kubernetes\\.io/os"
     value = "linux"
+  }
+  set {
+    name  = "region"
+    value = data.aws_region.current.name
+  }
+  set {
+    name  = "vpcId"
+    value = var.vpc_id
   }
 
 }

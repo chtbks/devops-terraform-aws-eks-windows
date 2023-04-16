@@ -10,10 +10,20 @@ variable "private_subnet_ids" {
   default     = []
 }
 
+variable "public_subnet_ids" {
+  type        = list(string)
+  description = "List of public subnet ids"
+  default     = []
+}
+
 variable "eks_cluster_name" {
   type        = string
   description = "Name for the EKS cluster"
   default     = "eks"
+}
+variable "eks_cluster_version" {
+  type        = string
+  description = "Kubernetes version for the EKS cluster"
 }
 
 variable "eks_users" {
