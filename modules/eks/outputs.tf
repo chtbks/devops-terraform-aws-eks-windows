@@ -6,9 +6,14 @@ output "cluster_arn" {
   value       = module.eks.cluster_arn
   description = "EKS cluster arn"
 }
+
 output "cluster_endpoint" {
   value       = module.eks.cluster_endpoint
   description = "EKS cluster endpoint"
+}
+output "cluster_oicd_provider_arn" {
+  value       = module.eks.oidc_provider_arn
+  description = "EKS OICD Provider arn"
 }
 
 output "cluster_certificate_authority_data" {

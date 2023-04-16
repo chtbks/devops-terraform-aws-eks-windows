@@ -2,6 +2,10 @@ variable "eks_cluster_name" {
   type        = string
   description = "EKS Cluster name"
 }
+variable "eks_cluster_oicd_provider_arn" {
+  type        = string
+  description = "EKS OICD Provider arn"
+}
 
 variable "linux_node_group_iam_role" {
   type        = string
@@ -43,4 +47,10 @@ variable "enable_loadbalancer_controler" {
   type        = bool
   description = "Enable ALB load Balancer controller"
   default     = true
+}
+
+variable "vpc_id" {
+  type        = string
+  description = "Id for the VPC for CTFd"
+  default     = null
 }

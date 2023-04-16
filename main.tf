@@ -26,7 +26,9 @@ module "eks" {
   source                                         = "./modules/eks"
   vpc_id                                         = module.vpc.vpc_id
   private_subnet_ids                             = module.vpc.private_subnet_ids
+  public_subnet_ids                              = module.vpc.public_subnet_ids
   eks_users                                      = var.eks_users
+  eks_cluster_version                            = var.eks_cluster_version
   eks_autoscaling_group_linux_min_size           = var.eks_autoscaling_group_linux_min_size
   eks_autoscaling_group_linux_desired_capacity   = var.eks_autoscaling_group_linux_desired_capacity
   eks_autoscaling_group_linux_max_size           = var.eks_autoscaling_group_linux_max_size
@@ -39,6 +41,7 @@ module "eks" {
 module "eks_extras" {
   source                        = "./modules/eks-extras"
   eks_cluster_name              = module.eks.cluster_name
+  vpc_id                        = module.vpc.vpc_id
   linux_node_group_iam_role     = module.eks.linux_node_group_iam_role
   windows_node_group_iam_role   = module.eks.windows_node_group_iam_role
   external_dns_support          = var.external_dns_support
@@ -46,6 +49,7 @@ module "eks_extras" {
   enable_cluster_autoscaler     = var.enable_cluster_autoscaler
   enable_cloudwatch_exported    = var.enable_cloudwatch_exported
   enable_loadbalancer_controler = var.enable_loadbalancer_controler
+  eks_cluster_oicd_provider_arn = module.eks.cluster_oicd_provider_arn
   depends_on = [
     module.eks,
     module.vpc

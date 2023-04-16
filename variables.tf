@@ -10,6 +10,12 @@ variable "aws_region" {
   default     = "us-east-1"
 }
 
+variable "eks_cluster_version" {
+  type        = string
+  description = "KKubernetes version for the EKS cluster"
+  default     = "1.26"
+}
+
 variable "eks_users" {
   description = "Additional AWS users to add to the EKS aws-auth configmap."
   type = list(object({
