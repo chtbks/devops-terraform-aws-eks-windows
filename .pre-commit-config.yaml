@@ -28,8 +28,8 @@ repos:
       args:
         - '--args=-i terraform -d test/fixture'
         - '--args=--skip-rules="AC_AWS_0369,AC_K8S_0064"'
-    - id: tfupdate
-      name: Autoupdate Terraform versions
+    # - id: tfupdate
+    #   name: Autoupdate Terraform versions
     - id: infracost_breakdown
       args:
         - --args=--path=./test/fixture
