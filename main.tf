@@ -35,7 +35,8 @@ module "eks" {
   eks_autoscaling_group_linux_min_size           = var.eks_autoscaling_group_linux_min_size
   eks_autoscaling_group_linux_desired_capacity   = var.eks_autoscaling_group_linux_desired_capacity
   eks_autoscaling_group_linux_max_size           = var.eks_autoscaling_group_linux_max_size
-  eks_instance_type                              = var.eks_instance_type
+  eks_windows_instance_type                      = var.eks_windows_instance_type
+  eks_linux_instance_type                        = var.eks_linux_instance_type
   eks_autoscaling_group_windows_min_size         = var.eks_autoscaling_group_windows_min_size
   eks_autoscaling_group_windows_desired_capacity = var.eks_autoscaling_group_windows_desired_capacity
   eks_autoscaling_group_windows_max_size         = var.eks_autoscaling_group_windows_max_size
