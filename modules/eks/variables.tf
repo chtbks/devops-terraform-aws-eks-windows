@@ -56,8 +56,14 @@ variable "eks_autoscaling_group_linux_max_size" {
   type        = number
 }
 
-variable "eks_instance_type" {
-  description = "Instance size for EKS worker nodes."
+variable "eks_linux_instance_type" {
+  description = "Instance size for EKS linux worker nodes."
+  default     = "m5.large"
+  type        = string
+}
+
+variable "eks_windows_instance_type" {
+  description = "Instance size for EKS windows worker nodes."
   default     = "m5.large"
   type        = string
 }
