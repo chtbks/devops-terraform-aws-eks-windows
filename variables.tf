@@ -12,7 +12,7 @@ variable "aws_region" {
 
 variable "eks_cluster_version" {
   type        = string
-  description = "KKubernetes version for the EKS cluster"
+  description = "Kubernetes version for the EKS cluster"
   default     = "1.26"
 }
 
@@ -73,7 +73,7 @@ variable "eks_autoscaling_group_windows_max_size" {
 
 variable "external_dns_support" {
   type        = bool
-  description = "Setup IAM, service accoutn and cluster role for external_dns in EKS"
+  description = "Setup IAM, service accounts and cluster role for external_dns in EKS"
   default     = false
 }
 
