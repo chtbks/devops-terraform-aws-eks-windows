@@ -92,3 +92,9 @@ variable "windows_ami_type" {
   description = "AMI type for the Windows Nodes."
   type        = string
 }
+
+
+variable "eks_windows_key_pair_name" {
+  description = "security key pair to apply to the windows nodes"
+  type        = string
+}

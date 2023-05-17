@@ -130,3 +130,8 @@ variable "vpc_cidr_public_subnets" {
   description = "private subnets in the main CIDR block for the VPC."
   default     = ["10.0.4.0/24", "10.0.5.0/24", "10.0.6.0/24"]
 }
+
+variable "eks_windows_key_pair_name" {
+  type        = list(string)
+  description = "security key pair to apply to the windows nodes"
+}

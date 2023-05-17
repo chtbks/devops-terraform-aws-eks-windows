@@ -48,6 +48,7 @@ module "eks" {
       min_size     = var.eks_autoscaling_group_windows_min_size
       max_size     = var.eks_autoscaling_group_windows_max_size
       desired_size = var.eks_autoscaling_group_windows_desired_capacity
+      key_name     = var.eks_windows_key_pair_name
     }
   }
   cluster_addons = {
