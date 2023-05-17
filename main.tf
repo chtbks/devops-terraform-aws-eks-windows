@@ -42,6 +42,7 @@ module "eks" {
   eks_autoscaling_group_windows_max_size         = var.eks_autoscaling_group_windows_max_size
   windows_ami_type                               = var.windows_ami_type
   eks_windows_key_pair_name                      = var.eks_windows_key_pair_name
+  eks_windows_disk_size                          = var.eks_windows_disk_size
 }
 module "eks_extras" {
   source                        = "./modules/eks-extras"

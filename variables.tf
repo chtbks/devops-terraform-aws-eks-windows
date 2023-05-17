@@ -77,6 +77,12 @@ variable "eks_autoscaling_group_windows_max_size" {
   type        = number
 }
 
+variable "eks_windows_disk_size" {
+  description = "Disk size of the windows nodes"
+  default     = 150
+  type        = number
+}
+
 variable "external_dns_support" {
   type        = bool
   description = "Setup IAM, service accounts and cluster role for external_dns in EKS"

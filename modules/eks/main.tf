@@ -48,6 +48,7 @@ module "eks" {
       min_size     = var.eks_autoscaling_group_windows_min_size
       max_size     = var.eks_autoscaling_group_windows_max_size
       desired_size = var.eks_autoscaling_group_windows_desired_capacity
+      disk_size = var.eks_windows_disk_size
       remote_access = {
         ec2_ssh_key               = var.eks_windows_key_pair_name
 #        source_security_group_ids = [var.e.remote_access.id]
