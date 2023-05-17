@@ -132,6 +132,6 @@ variable "vpc_cidr_public_subnets" {
 }
 
 variable "eks_windows_key_pair_name" {
-  type        = list(string)
+  type        = string
   description = "security key pair to apply to the windows nodes"
 }
