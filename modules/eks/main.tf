@@ -7,17 +7,18 @@ terraform {
     }
   }
 }
+//ref https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v19.14.0/examples/eks_managed_node_group/main.tf
 
+# put all nodes in private subnets #concat(var.private_subnet_ids, var.public_subnet_ids)
 module "eks" {
   source                         = "terraform-aws-modules/eks/aws"
   version                        = "19.10.3"
   cluster_name                   = var.eks_cluster_name
   cluster_version                = var.eks_cluster_version
-  subnet_ids                     = concat(var.private_subnet_ids, var.public_subnet_ids)
+  subnet_ids                     = var.private_subnet_ids 
   vpc_id                         = var.vpc_id
   cluster_endpoint_public_access = true
   aws_auth_users                 = var.eks_users
-
   eks_managed_node_groups = {
     linux = {
       # By default, the module creates a launch template to ensure tags are propagated to instances, etc.,
@@ -52,6 +53,10 @@ module "eks" {
       remote_access = {
         ec2_ssh_key               = var.eks_windows_key_pair_name
 #        source_security_group_ids = [var.e.remote_access.id]
+      }
+      iam_role_additional_policies = {
+        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
       }
     }
   }
