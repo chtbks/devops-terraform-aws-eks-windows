@@ -6,13 +6,13 @@ variable "eks_cluster_name" {
 
 variable "aws_region" {
   type        = string
-  description = "Region to deploy CTFd into"
+  description = "Region to deploy EKS Cluster into"
   default     = "us-east-1"
 }
 
 variable "eks_cluster_version" {
   type        = string
-  description = "KKubernetes version for the EKS cluster"
+  description = "Kubernetes version for the EKS cluster"
   default     = "1.26"
 }
 
