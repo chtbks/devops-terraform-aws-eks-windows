@@ -69,13 +69,19 @@ resource "helm_release" "cluster_autoscaler" {
 
   set {
     name  = "image.tag"
-    value = "v1.28.0"
+    value = "v1.26.2"
+  }
+
+  set {
+    name  = "image.pullPolicy"
+    value = "Always"
   }
 
   set {
     name  = "autoDiscovery.enabled"
     value = "true"
   }
+
   set {
     name  = "autoDiscovery.clusterName"
     value = var.eks_cluster_name
