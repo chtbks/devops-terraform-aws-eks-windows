@@ -68,6 +68,11 @@ resource "helm_release" "cluster_autoscaler" {
   namespace  = "kube-system"
 
   set {
+    name  = "image.tag"
+    value = "v1.28.0"
+  }
+
+  set {
     name  = "autoDiscovery.enabled"
     value = "true"
   }
