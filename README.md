@@ -20,7 +20,7 @@ No providers.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Region to deploy CTFd into | `string` | `"us-east-1"` | no |
+| <a name="input_aws_region"></a> [aws\_region](#input\_aws\_region) | Region to deploy EKS Cluster into | `string` | `"us-east-1"` | no |
 | <a name="input_eks_autoscaling_group_linux_desired_capacity"></a> [eks\_autoscaling\_group\_linux\_desired\_capacity](#input\_eks\_autoscaling\_group\_linux\_desired\_capacity) | Desired capacity for Linux nodes for the EKS. | `number` | `1` | no |
 | <a name="input_eks_autoscaling_group_linux_max_size"></a> [eks\_autoscaling\_group\_linux\_max\_size](#input\_eks\_autoscaling\_group\_linux\_max\_size) | Minimum number of Linux nodes for the EKS. | `number` | `2` | no |
 | <a name="input_eks_autoscaling_group_linux_min_size"></a> [eks\_autoscaling\_group\_linux\_min\_size](#input\_eks\_autoscaling\_group\_linux\_min\_size) | Minimum number of Linux nodes for the EKS. | `number` | `1` | no |
@@ -28,7 +28,7 @@ No providers.
 | <a name="input_eks_autoscaling_group_windows_max_size"></a> [eks\_autoscaling\_group\_windows\_max\_size](#input\_eks\_autoscaling\_group\_windows\_max\_size) | Maximum number of Windows nodes for the EKS. | `number` | `2` | no |
 | <a name="input_eks_autoscaling_group_windows_min_size"></a> [eks\_autoscaling\_group\_windows\_min\_size](#input\_eks\_autoscaling\_group\_windows\_min\_size) | Minimum number of Windows nodes for the EKS | `number` | `1` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name for the EKS Cluster | `string` | `"eks"` | no |
-| <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | KKubernetes version for the EKS cluster | `string` | `"1.26"` | no |
+| <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | Kubernetes version for the EKS cluster | `string` | `"1.26"` | no |
 | <a name="input_eks_instance_type"></a> [eks\_instance\_type](#input\_eks\_instance\_type) | Instance size for EKS worker nodes. | `string` | `"m5.large"` | no |
 | <a name="input_eks_users"></a> [eks\_users](#input\_eks\_users) | Additional AWS users to add to the EKS aws-auth configmap. | <pre>list(object({<br>    userarn  = string<br>    username = string<br>    groups   = list(string)<br>  }))</pre> | `[]` | no |
 | <a name="input_enable_cloudwatch_exported"></a> [enable\_cloudwatch\_exported](#input\_enable\_cloudwatch\_exported) | Enable cloudwatch exporter | `bool` | `true` | no |
@@ -70,6 +70,7 @@ provider "aws" {
 module "eks_windows" {
   source = "../../" # Actually set to "1nval1dctf/eks-windows/aws"
 }
+
 ```
 
 ## Building / Contributing

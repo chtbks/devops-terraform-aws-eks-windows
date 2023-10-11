@@ -19,6 +19,7 @@ module "eks" {
   vpc_id                         = var.vpc_id
   cluster_endpoint_public_access = true
   aws_auth_users                 = var.eks_users
+
   eks_managed_node_groups = {
     linux = {
       # By default, the module creates a launch template to ensure tags are propagated to instances, etc.,

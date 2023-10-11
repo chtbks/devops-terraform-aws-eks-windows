@@ -6,7 +6,7 @@ variable "eks_cluster_name" {
 
 variable "aws_region" {
   type        = string
-  description = "Region to deploy CTFd into"
+  description = "Region to deploy EKS Cluster into"
   default     = "us-east-1"
 }
 
