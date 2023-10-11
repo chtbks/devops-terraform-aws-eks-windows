@@ -68,10 +68,6 @@ resource "helm_release" "cluster_autoscaler" {
   namespace  = "kube-system"
 
   set {
-    name  = "image.repository"
-    value = "k8s.gcr.io/autoscaling/cluster-autoscaler"
-  }
-  set {
     name  = "autoDiscovery.enabled"
     value = "true"
   }
