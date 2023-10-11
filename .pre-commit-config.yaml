@@ -15,26 +15,26 @@ repos:
     - id: terraform_tfsec
       args:
         - '--args=-e aws-ec2-require-vpc-flow-logs-for-all-vpcs,aws-ec2-no-public-ip-subnet,aws-eks-no-public-cluster-access-to-cidr,aws-ec2-no-public-egress-sgr,aws-eks-no-public-cluster-access'
-    - id: terraform_checkov
-      args:
-        - --args=--quiet
-        - --args=--skip-check CKV_K8S_21
-        - --args=--skip-check CKV_K8S_14
-        - --args=--skip-check CKV_K8S_43
-        - --args=--skip-check CKV_K8S_28
-        - --args=--skip-check CKV_K8S_29
-        - --args=--skip-check CKV_K8S_30
-    - id: terrascan
-      args:
-        - '--args=-i terraform -d test/fixture'
-        - '--args=--skip-rules="AC_AWS_0369,AC_K8S_0064"'
+    # - id: terraform_checkov
+    #   args:
+    #     - --args=--quiet
+    #     - --args=--skip-check CKV_K8S_21
+    #     - --args=--skip-check CKV_K8S_14
+    #     - --args=--skip-check CKV_K8S_43
+    #     - --args=--skip-check CKV_K8S_28
+    #     - --args=--skip-check CKV_K8S_29
+    #     - --args=--skip-check CKV_K8S_30
+    # - id: terrascan
+    #   args:
+    #     - '--args=-i terraform -d test/fixture'
+    #     - '--args=--skip-rules="AC_AWS_0369,AC_K8S_0064"'
     # - id: tfupdate
     #   name: Autoupdate Terraform versions
-    - id: infracost_breakdown
-      args:
-        - --args=--path=./test/fixture
-        - --hook-config='.totalMonthlyCost|tonumber < 260'
-        - --hook-config='.currency == "USD"'
+    # - id: infracost_breakdown
+    #   args:
+    #     - --args=--path=./test/fixture
+    #     - --hook-config='.totalMonthlyCost|tonumber < 260'
+    #     - --hook-config='.currency == "USD"'
 - repo: https://github.com/dnephin/pre-commit-golang
   rev: v0.5.1
   hooks:

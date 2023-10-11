@@ -370,7 +370,7 @@ resource "kubernetes_service_account_v1" "aws_lb" {
       "eks.amazonaws.com/role-arn" = aws_iam_role.aws_lb[0].arn
     }
   }
-  automount_service_account_token = "true"
+  automount_service_account_token = true
 }
 resource "kubernetes_cluster_role" "aws_lb" {
   count = var.enable_loadbalancer_controler ? 1 : 0
