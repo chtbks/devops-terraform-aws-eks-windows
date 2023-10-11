@@ -28,9 +28,6 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
     actions = [
       "autoscaling:SetDesiredCapacity",
       "autoscaling:TerminateInstanceInAutoScalingGroup",
-      "ec2:DescribeImages",
-      "ec2:GetInstanceTypesFromInstanceRequirements",
-      "eks:DescribeNodegroup"
     ]
 
     resources = ["*"]
@@ -70,6 +67,10 @@ resource "helm_release" "cluster_autoscaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   namespace  = "kube-system"
 
+  set {
+    name  = "image.repository"
+    value = "k8s.gcr.io/autoscaling/cluster-autoscaler"
+  }
   set {
     name  = "autoDiscovery.enabled"
     value = "true"
