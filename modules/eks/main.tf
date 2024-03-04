@@ -56,10 +56,10 @@ module "eks" {
         ec2_ssh_key               = var.eks_windows_key_pair_name
 #        source_security_group_ids = [var.e.remote_access.id]
       }
-      iam_role_additional_policies = {
-        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
-      }
+#      iam_role_additional_policies = {
+#        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+#        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
+#      }
     }
   }
   cluster_addons = {
