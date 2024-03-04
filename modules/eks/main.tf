@@ -15,7 +15,8 @@ module "eks" {
   version                        = "19.10.3"
   cluster_name                   = var.eks_cluster_name
   cluster_version                = var.eks_cluster_version
-  subnet_ids                     = var.private_subnet_ids 
+  subnet_ids                     = concat(var.private_subnet_ids, var.public_subnet_ids)
+
   vpc_id                         = var.vpc_id
   cluster_endpoint_public_access = true
   aws_auth_users                 = var.eks_users
