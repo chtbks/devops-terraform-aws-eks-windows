@@ -67,6 +67,13 @@ resource "helm_release" "cluster_autoscaler" {
   repository = "https://kubernetes.github.io/autoscaler"
   namespace  = "kube-system"
 
+  values = [
+      <<EOF
+  image:
+    tag: "v1.26.2"
+  EOF
+    ]
+  
   set {
     name  = "image.tag"
     value = "v1.26.2"
