@@ -21,6 +21,9 @@ module "eks" {
   cluster_endpoint_public_access         = false
   aws_auth_users                         = var.eks_users
   cloudwatch_log_group_retention_in_days = 7
+  kms_key_enable_default_policy          = true
+  kms_key_administrators                 = var.kms_key_administrators
+  kms_key_owners                         = var.kms_key_owners
 
   eks_managed_node_groups = {
     linux = {

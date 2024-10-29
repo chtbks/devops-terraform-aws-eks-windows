@@ -141,3 +141,15 @@ variable "eks_windows_key_pair_name" {
   type        = string
   description = "security key pair to apply to the windows nodes"
 }
+
+variable "kms_key_owners" {
+  description = "List of ARNs that should have full access to the KMS key."
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_administrators" {
+  description = "List of ARNs that should have admin access to the KMS key."
+  type        = list(string)
+  default     = []
+}

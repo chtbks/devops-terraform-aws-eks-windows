@@ -43,6 +43,8 @@ module "eks" {
   windows_ami_type                               = var.windows_ami_type
   eks_windows_key_pair_name                      = var.eks_windows_key_pair_name
   eks_windows_disk_size                          = var.eks_windows_disk_size
+  kms_key_owners                                 = var.kms_key_owners
+  kms_key_administrators                         = var.kms_key_administrators
 }
 module "eks_extras" {
   source                        = "./modules/eks-extras"

@@ -21,6 +21,7 @@ variable "eks_cluster_name" {
   description = "Name for the EKS cluster"
   default     = "eks"
 }
+
 variable "eks_cluster_version" {
   type        = string
   description = "Kubernetes version for the EKS cluster"
@@ -98,8 +99,19 @@ variable "windows_ami_type" {
   type        = string
 }
 
-
 variable "eks_windows_key_pair_name" {
   description = "security key pair to apply to the windows nodes"
   type        = string
+}
+
+variable "kms_key_owners" {
+  description = "List of ARNs that should have full access to the KMS key."
+  type        = list(string)
+  default     = []
+}
+
+variable "kms_key_administrators" {
+  description = "List of ARNs that should have admin access to the KMS key."
+  type        = list(string)
+  default     = []
 }
