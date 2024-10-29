@@ -68,12 +68,12 @@ resource "helm_release" "cluster_autoscaler" {
   namespace  = "kube-system"
 
   values = [
-      <<EOF
+    <<EOF
   image:
     tag: "v1.26.2"
   EOF
-    ]
-  
+  ]
+
   set {
     name  = "image.tag"
     value = "v1.26.2"

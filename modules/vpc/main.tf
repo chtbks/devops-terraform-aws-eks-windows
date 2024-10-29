@@ -25,9 +25,9 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = false
 
-  enable_flow_log                      = true
-  create_flow_log_cloudwatch_iam_role  = true
-  create_flow_log_cloudwatch_log_group = true
+  enable_flow_log                      = false
+  create_flow_log_cloudwatch_iam_role  = false
+  create_flow_log_cloudwatch_log_group = false
 
   vpc_tags = {
     "kubernetes.io/cluster/${var.eks_cluster_name}" = "shared"

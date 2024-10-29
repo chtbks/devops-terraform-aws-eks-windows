@@ -11,15 +11,16 @@ terraform {
 
 # put all nodes in private subnets #concat(var.private_subnet_ids, var.public_subnet_ids)
 module "eks" {
-  source                         = "terraform-aws-modules/eks/aws"
-  version                        = "19.10.3"
-  cluster_name                   = var.eks_cluster_name
-  cluster_version                = var.eks_cluster_version
-  subnet_ids                     = concat(var.private_subnet_ids, var.public_subnet_ids)
+  source          = "terraform-aws-modules/eks/aws"
+  version         = "19.10.3"
+  cluster_name    = var.eks_cluster_name
+  cluster_version = var.eks_cluster_version
+  subnet_ids      = concat(var.private_subnet_ids, var.public_subnet_ids)
 
-  vpc_id                         = var.vpc_id
-  cluster_endpoint_public_access = true
-  aws_auth_users                 = var.eks_users
+  vpc_id                                 = var.vpc_id
+  cluster_endpoint_public_access         = false
+  aws_auth_users                         = var.eks_users
+  cloudwatch_log_group_retention_in_days = 7
 
   eks_managed_node_groups = {
     linux = {
@@ -51,15 +52,15 @@ module "eks" {
       min_size     = var.eks_autoscaling_group_windows_min_size
       max_size     = var.eks_autoscaling_group_windows_max_size
       desired_size = var.eks_autoscaling_group_windows_desired_capacity
-      disk_size = var.eks_windows_disk_size
+      disk_size    = var.eks_windows_disk_size
       remote_access = {
-        ec2_ssh_key               = var.eks_windows_key_pair_name
-#        source_security_group_ids = [var.e.remote_access.id]
+        ec2_ssh_key = var.eks_windows_key_pair_name
+        #        source_security_group_ids = [var.e.remote_access.id]
       }
-#      iam_role_additional_policies = {
-#        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-#        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
-#      }
+      #      iam_role_additional_policies = {
+      #        AmazonEC2ContainerRegistryReadOnly = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      #        AmazonEBSCSIDriverPolicy = "arn:aws:iam::aws:policy/AmazonEBSCSIDriverPolicy"
+      #      }
     }
   }
   cluster_addons = {
@@ -76,12 +77,15 @@ module "eks" {
   ]
 }
 
-resource "kubernetes_config_map_v1" "vpc_resource_controller" {
-  metadata {
-    name      = "amazon-vpc-cni"
-    namespace = "kube-system"
-  }
-  data = {
-    enable-windows-ipam = true
-  }
-}
+# This is managed by AWS VPC CNI addon
+# https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html
+# https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html
+# resource "kubernetes_config_map_v1" "vpc_resource_controller" {
+#   metadata {
+#     name      = "amazon-vpc-cni"
+#     namespace = "kube-system"
+#   }
+#   data = {
+#     enable-windows-ipam = true
+#   }
+# }
