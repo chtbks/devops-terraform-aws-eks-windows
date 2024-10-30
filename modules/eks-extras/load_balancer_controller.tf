@@ -315,7 +315,7 @@ data "aws_iam_policy_document" "aws_lb" {
 
 resource "aws_iam_policy" "aws_lb" {
   count  = var.enable_loadbalancer_controler ? 1 : 0
-  name   = "AWSLoadBalancerControllerIAMPolicy"
+  name   = "AWSLoadBalancerControllerIAMPolicy-${var.environment}"
   path   = "/"
   policy = data.aws_iam_policy_document.aws_lb[0].json
 }
@@ -329,7 +329,7 @@ locals {
 
 resource "aws_iam_role" "aws_lb" {
   count = var.enable_loadbalancer_controler ? 1 : 0
-  name  = "AmazonEKSLoadBalancerControllerRole"
+  name  = "AmazonEKSLoadBalancerControllerRole-${var.environment}"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [

@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "cluster_autoscaler" {
 
 resource "aws_iam_policy" "cluster_autoscaler" {
   count       = var.enable_cluster_autoscaler ? 1 : 0
-  name_prefix = "cluster-autoscaler"
+  name_prefix = "cluster-autoscaler-${var.environment}"
   description = "EKS cluster-autoscaler policy for cluster ${var.eks_cluster_name}"
   policy      = data.aws_iam_policy_document.cluster_autoscaler[0].json
 }

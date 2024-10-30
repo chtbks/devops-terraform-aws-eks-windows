@@ -54,3 +54,8 @@ variable "vpc_id" {
   description = "Id for the VPC for CTFd"
   default     = null
 }
+
+variable "environment" {
+  description = "Value to use as suffix for resources that need to be unique"
+  type        = string
+}

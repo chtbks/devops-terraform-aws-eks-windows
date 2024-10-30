@@ -68,9 +68,22 @@ module "eks" {
   }
   cluster_addons = {
     kube-proxy = {}
-    vpc-cni    = {}
-    coredns    = {}
+    vpc-cni = {
+      configuration_values = jsonencode({
+        env = {
+          ENABLE_PREFIX_DELEGATION = "true"
+          WARM_PREFIX_TARGET       = "1"
+          WARM_IP_TARGET           = "5"
+        }
+        enableWindowsIpam             = "true"
+        enableWindowsPrefixDelegation = "true"
+        minimumWindowsIPTarget        = 15
+        warmWindowsPrefixTarget       = 1
+      })
+    }
+    coredns = {}
   }
+
   cluster_enabled_log_types = [
     "api",
     "audit",
@@ -80,7 +93,7 @@ module "eks" {
   ]
 }
 
-# This is managed by AWS VPC CNI addon
+# This is managed by AWS VPC CNI add-on - see above
 # https://docs.aws.amazon.com/eks/latest/userguide/managing-vpc-cni.html
 # https://docs.aws.amazon.com/eks/latest/userguide/vpc-add-on-update.html
 # resource "kubernetes_config_map_v1" "vpc_resource_controller" {
