@@ -153,3 +153,8 @@ variable "kms_key_administrators" {
   type        = list(string)
   default     = []
 }
+
+variable "environment" {
+  description = "Value to use as suffix for resources that need to be unique"
+  type        = string
+}

@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "cloudwatch_exporter" {
 
 resource "aws_iam_policy" "cloudwatch_exporter" {
   count  = var.enable_cloudwatch_exported ? 1 : 0
-  name   = "cloudwatch_exporter"
+  name   = "cloudwatch_exporter_${var.environment}"
   path   = "/"
   policy = data.aws_iam_policy_document.cloudwatch_exporter[0].json
 }
