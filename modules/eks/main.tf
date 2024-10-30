@@ -69,6 +69,8 @@ module "eks" {
   cluster_addons = {
     kube-proxy = {}
     vpc-cni = {
+      # Configuration values can be discovered with ` aws eks describe-addon-configuration --addon-name <kube-proxy|vpc-cni> --addon-version <v1.29.0-eksbuild.1> | jq '.configurationSchema' | jq 'fromjson' `
+      # See for more details: https://docs.aws.amazon.com/cli/latest/reference/eks/describe-addon-configuration.html
       configuration_values = jsonencode({
         env = {
           ENABLE_PREFIX_DELEGATION = "true"
