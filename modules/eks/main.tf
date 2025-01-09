@@ -67,7 +67,9 @@ module "eks" {
     }
   }
   cluster_addons = {
-    kube-proxy = {}
+    kube-proxy = {
+      addon_version = "v1.29.0-eksbuild.1"
+    }
     vpc-cni = {
       # Configuration values can be discovered with ` aws eks describe-addon-configuration --addon-name <kube-proxy|vpc-cni> --addon-version <v1.29.0-eksbuild.1> | jq '.configurationSchema' | jq 'fromjson' `
       # See for more details: https://docs.aws.amazon.com/cli/latest/reference/eks/describe-addon-configuration.html
@@ -82,8 +84,11 @@ module "eks" {
         minimumWindowsIPTarget        = 15
         warmWindowsPrefixTarget       = 1
       })
+      addon_version = "v1.16.0-eksbuild.1"
     }
-    coredns = {}
+    coredns = {
+      addon_version = "v1.11.1-eksbuild.4"
+    }
   }
 
   cluster_enabled_log_types = [
