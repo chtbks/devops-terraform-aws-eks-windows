@@ -45,6 +45,7 @@ module "eks" {
   eks_windows_disk_size                          = var.eks_windows_disk_size
   kms_key_owners                                 = var.kms_key_owners
   kms_key_administrators                         = var.kms_key_administrators
+  cluster_addons                                 = var.cluster_addons
 }
 module "eks_extras" {
   source                        = "./modules/eks-extras"

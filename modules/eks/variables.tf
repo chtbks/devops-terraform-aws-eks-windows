@@ -115,3 +115,9 @@ variable "kms_key_administrators" {
   type        = list(string)
   default     = []
 }
+
+variable "cluster_addons" {
+  description = "Map of managed addons to be merged with defaults provided by this module"
+  type        = map(map(string))
+  default     = {}
+}
