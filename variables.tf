@@ -158,3 +158,9 @@ variable "environment" {
   description = "Value to use as suffix for resources that need to be unique"
   type        = string
 }
+
+variable "cluster_addons" {
+  description = "Map of managed addons to be merged with defaults provided by this module"
+  type        = map(map(string))
+  default     = {}
+}
